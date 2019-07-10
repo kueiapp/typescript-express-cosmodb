@@ -1,105 +1,82 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var db_module_1 = __importDefault(require("./db.module"));
-var firestore_1 = __importDefault(require("../config/firestore"));
-var insertArticle = function (inputData) {
-    return new Promise(function (resolve, reject) {
-        // get from db.module
-        db_module_1.default.getConnection(function (connectionError, connection) {
-            if (connectionError) {
-                reject(connectionError);
-            }
-            else {
-                connection.query("INSERT INTO favorite SET ?", [inputData], function (error, result) {
-                    if (error) {
-                        console.error('SQL error: ', error);
-                        reject(error);
-                    }
-                    else if (result.affectedRows === 1) {
-                        resolve({ "code": 200, "msg": "Insert successfully！", "data": inputData });
-                    }
-                    // release memory
-                    connection.release();
-                });
-            }
-        });
-    });
-};
-var selectArticle = function () {
-    return new Promise(function (resolve, reject) {
-        // get from db.module
-        db_module_1.default.getConnection(function (connectionError, connection) {
-            if (connectionError) {
-                reject(connectionError);
-            }
-            else {
-                connection.query("SELECT * FROM favorite", function (error, result) {
-                    if (error) {
-                        console.error('SQL error: ', error);
-                        reject(error);
-                    }
-                    else {
-                        resolve(result);
-                    }
-                    // release memory
-                    connection.release();
-                });
-            }
-        });
-    });
-};
-var deleteArticle = function (aid) {
-    return new Promise(function (resolve, reject) {
-        // get from db.module
-        db_module_1.default.getConnection(function (connectionError, connection) {
-            if (connectionError) {
-                reject(connectionError);
-            }
-            else {
-                connection.query("DELETE FROM favorite WHERE id = ? ", [aid], function (error, result) {
-                    if (error) {
-                        console.error('SQL error: ', error);
-                        reject(error);
-                    }
-                    else if (result.affectedRows === 1) {
-                        resolve({ "code": 200, "msg": "DELETE successfully！" });
-                    }
-                    // release memory
-                    connection.release();
-                });
-            }
-        });
-    });
-};
-/** Firebase functions
-* @func: getTalkFromFirebase: get data from FireStore
-* @func: addTalkToFirebase: add data to FireStore
+/**
+* by kueiapp.com
 */
-var getTalkFromFirebase = function () {
+// ES6
+var mongodb_1 = require("../config/mongodb");
+var insertDocument = function () {
     return new Promise(function (resolve, reject) {
-        try {
-            resolve(firestore_1.default.collection('talk').orderBy('name'));
-        }
-        catch (err) {
-            reject(err);
-        }
+        mongodb_1.db.collection('families').insertOne({
+            "id": "AndersenFamily",
+            "lastName": "Andersen",
+            "parents": [
+                { "firstName": "Thomas" },
+                { "firstName": "Mary Kay" }
+            ],
+            "children": [
+                { "firstName": "John", "gender": "male", "grade": 7 }
+            ],
+            "pets": [
+                { "givenName": "Fluffy" }
+            ],
+            "address": { "country": "USA", "state": "WA", "city": "Seattle" }
+        }, function (err, result) {
+            mongodb_1.assert.equal(err, null);
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve({ "code": 200, "msg": "OK！" });
+            }
+        });
     });
 };
-var addTalkToFirebase = function (_name, _msg) {
+var findFamilies = function () {
     return new Promise(function (resolve, reject) {
-        var talk = firestore_1.default.ref("talk");
-        if (talk.set({ name: _name, message: _msg })) {
-            resolve({ "code": 200, "msg": "OK！" });
-        }
-        else {
-            reject({ "code": 401, "msg": "Failed!" });
-        }
+        var cursor = mongodb_1.db.collection('families').find();
+        cursor.each(function (err, doc) {
+            mongodb_1.assert.equal(err, null);
+            if (doc != null) {
+                resolve({ "code": 200, "msg": "OK！", "data": doc });
+            }
+            else {
+                reject(err);
+            }
+        });
+    });
+};
+var updateFamilies = function () {
+    return new Promise(function (resolve, reject) {
+        mongodb_1.db.collection('families').updateOne({ "lastName": "Andersen" }, {
+            $set: { "pets": [
+                    { "givenName": "Fluffy" },
+                    { "givenName": "Rocky" }
+                ] },
+            $currentDate: { "lastModified": true }
+        }, function (err, results) {
+            if (!err) {
+                resolve(results);
+            }
+            else {
+                reject(err);
+            }
+        });
+    });
+};
+var removeFamilies = function () {
+    return new Promise(function (resolve, reject) {
+        mongodb_1.db.collection('families').deleteMany({ "lastName": "Andersen" }, function (err, results) {
+            if (!err) {
+                resolve(results);
+            }
+            else {
+                reject(err);
+            }
+        });
     });
 };
 exports.default = {
-    selectArticle: selectArticle, insertArticle: insertArticle, deleteArticle: deleteArticle, getTalkFromFirebase: getTalkFromFirebase, addTalkToFirebase: addTalkToFirebase
+    insertDocument: insertDocument, findFamilies: findFamilies, updateFamilies: updateFamilies, removeFamilies: removeFamilies
 };
 //# sourceMappingURL=article.module.js.map

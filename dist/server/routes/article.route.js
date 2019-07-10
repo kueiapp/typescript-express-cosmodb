@@ -15,10 +15,7 @@ router.use(body_parser_1.default.json()); // for POST body
 router.route('/')
     .get(article_controller_1.default.getArticles)
     .post(article_controller_1.default.addArticle)
-    .delete(article_controller_1.default.deleteArticle);
-// === /api/article/firebase
-router.route('/firebase')
-    .get(article_controller_1.default.getTalks)
-    .post(article_controller_1.default.addTalk);
+    .delete(article_controller_1.default.deleteArticle)
+    .put(article_controller_1.default.updateArticle);
 exports.default = router;
 //# sourceMappingURL=article.route.js.map

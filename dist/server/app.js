@@ -7,7 +7,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // ES6
-var setting_1 = __importDefault(require("./config/setting"));
 var morgan_1 = __importDefault(require("morgan"));
 var express_1 = __importDefault(require("express"));
 var body_parser_1 = __importDefault(require("body-parser"));
@@ -24,7 +23,7 @@ app.use(cors_1.default());
 var jsonParser = body_parser_1.default.json();
 // create application/x-www-form-urlencoded parser
 app.use(body_parser_1.default.urlencoded({ extended: false })); // false:string, true:all types
-var port = process.env.PORT || setting_1.default.config.port;
+var port = process.env.PORT || 3000;
 /** node.js main **/
 app.listen(port, function () {
     console.log("Listening on ", port);
@@ -32,7 +31,7 @@ app.listen(port, function () {
 /* GET home page. */
 // related to /api
 app.get('/', function (req, res) {
-    res.send("on http://127.0.0.1:" + setting_1.default.config.port + " (" + setting_1.default.config.env + ")");
+    res.send("on http://127.0.0.1");
 });
 var api_route_1 = __importDefault(require("./routes/api.route"));
 app.use('/api', api_route_1.default);

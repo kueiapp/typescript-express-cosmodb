@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import express from 'express';
 // import config from '../config/config.js';
 var express_1 = __importDefault(require("express"));
-var setting = require("../config/setting");
 var router = express_1.default.Router();
 /*
 * GET localhost:[port]/api page.
