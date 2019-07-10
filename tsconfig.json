@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "esModuleInterop": true,
+    "noImplicitAny": false, // does not care about type any in functions
+    "sourceMap": true,
+    "rootDir": "./src_ts",
+    "outDir": "./dist",
+    // "watch": true,
+    "strict": false,
+    "experimentalDecorators": true, // for vue-loader 14+
+    "moduleResolution": "node",
+  },
+  "include": [
+    "./src_ts/**/*"
+  ],
+  "exclude": [
+    "node_modules/**/*"
+  ]
+}
