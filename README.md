@@ -1,4 +1,4 @@
-Build a Web App sample using Node.js and Vue in TypeScript and MySQL
+Build a Web App sample using Node.js and Vue in TypeScript and CosmosDB and async/await Functions
 ============
 ## setup by the commands below #
 1. Installation from package.json
