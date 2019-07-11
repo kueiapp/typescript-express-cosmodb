@@ -1,17 +1,23 @@
 // Initialize mongo db
+const MongoClient = require('mongodb').MongoClient;
+import assert from 'assert'
 
-var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
-// var ObjectId = require('mongodb').ObjectID;
-var url = process.env.COSMOS_URL;
+// Init dotenv file in TypeScript
+import dotenv from "dotenv";
+dotenv.config();
+
+const url = process.env.COSMOS_URL;
+console.log('url: '+url)
 
 let db = null;
-async function initDB(){
-	 MongoClient.connect(url, { useNewUrlParser: true }, async function(err, client) {
-	  await assert.equal(null, err);
-	  db = await client.db('familiesdb');
-	});
-}
-initDB();
+MongoClient.connect(url, 
+	{
+ 		useNewUrlParser: true, 
+ 		connectWithNoPrimary: true
+ 	},
+	async function(err, client) {
+		assert.equal(null, err);
+		db = await client.db('familiesdb');
+});
 
-export {db, assert};
+export {db, assert}

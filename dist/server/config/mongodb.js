@@ -1,5 +1,4 @@
 "use strict";
-// Initialize mongo db
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -39,8 +38,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 exports.assert = assert;
-// var ObjectId = require('mongodb').ObjectID;
+// config dotenv environment
+// switch(process.env.NODE_ENV) {
+//   case "development":
+//     console.log("Environment is 'development'")
+//     configDotenv({
+//       path: path.resolve(__dirname, "../.env.development")
+//     })
+//     break
+//   case "production":
+//     configDotenv({
+//       path: path.resolve(__dirname, "../.env")
+//     })
+//     break
+//   default:
+//     throw new Error(`'NODE_ENV' ${process.env.NODE_ENV} is not handled!`)
+// }
 var url = process.env.COSMOS_URL;
+console.log("cosmo url = " + url);
 var db = null;
 exports.db = db;
 function initDB() {

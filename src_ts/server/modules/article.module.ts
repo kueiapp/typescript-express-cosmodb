@@ -2,32 +2,36 @@
 * by kueiapp.com
 */
 // ES6
-import {db,assert} from '../config/mongodb'
+import {db, assert} from '../config/mongodb'
+import {MongoError} from 'mongodb'
 
 var insertDocument = function() {
   return new Promise( function (resolve, reject){
-    db.collection('families').insertOne( {
-            "id": "AndersenFamily",
-            "lastName": "Andersen",
-            "parents": [
-                { "firstName": "Thomas" },
-                { "firstName": "Mary Kay" }
-            ],
-            "children": [
-                { "firstName": "John", "gender": "male", "grade": 7 }
-            ],
-            "pets": [
-                { "givenName": "Fluffy" }
-            ],
-            "address": { "country": "USA", "state": "WA", "city": "Seattle" }
-        }, 
-      function(err, result) {
+    db.collection('families').insertOne( 
+      {
+          "id": "Youtuber",
+          "lastName": "Mao",
+          "parents": [
+              { "firstName": "Alan" },
+              { "firstName": "Kiki" }
+          ],
+          "children": [
+              { "firstName": "John", "gender": "male", "grade": 7 },
+              { "firstName": "John2", "gender": "male", "grade": 17 }
+          ],
+          "pets": [
+              { "givenName": "HowHow" }
+          ],
+          "address": { "country": "TW", "state": "TW", "city": "Taipei" }
+      }, 
+      function(err:MongoError, result) {
         assert.equal(err, null);
+        // console.log(result)
         if(err){
           reject(err)
         }
         else{
-          resolve({"code":200, "msg": "OK！"});
+          resolve({"code":200, "msg": "OK!"});
         }
     });
   });
@@ -36,12 +40,19 @@ var insertDocument = function() {
 var findFamilies = function() {
   return new Promise( function (resolve, reject){ 
     var cursor = db.collection('families').find();
-    cursor.each(function(err, doc) {
+    let results = []
+    cursor.each( async function(err:MongoError, doc) {
         assert.equal(err, null);
-        if (doc != null) {
-            resolve({"code":200, "msg": "OK！", "data":doc});
-        } else {
-            reject(err)
+        if(err) {
+          reject(err)
+        }
+        else {
+          if (doc != null) {
+            results.push(doc)
+          } 
+          else {
+            resolve({"code": "200", "msg":"OK", "data":results})
+          }
         }
     });
   });
@@ -50,17 +61,21 @@ var findFamilies = function() {
 var updateFamilies = function() {
   return new Promise( function (resolve, reject){ 
     db.collection('families').updateOne(
-        { "lastName" : "Andersen" },
-        {
-            $set: { "pets": [
-                { "givenName": "Fluffy" },
-                { "givenName": "Rocky"}
-            ] },
-            $currentDate: { "lastModified": true }
-        }, 
-      function(err, results) {
+      { "lastName" : "Andersen" }, // update target
+      {
+          $set: { 
+            "pets": [
+              { "givenName": "666666" },
+              { "givenName": "555555"}
+            ] 
+          },
+          $currentDate: { "lastModified": true }
+      }, 
+      function(err:MongoError, results) {
         if(!err){
-          resolve(results)
+          if(results.modifiedCount === 1){
+            resolve({"code":200, "msg":"data modifed"})
+          }
         }
         else{
           reject(err)
@@ -72,10 +87,10 @@ var updateFamilies = function() {
 var removeFamilies = function() {
   return new Promise( function (resolve, reject){ 
     db.collection('families').deleteMany(
-        { "lastName": "Andersen" },
-        function(err, results) {
+        { "lastName": "KiKi" }, // delete conditions
+        function(err:MongoError, results) {
             if(!err){
-              resolve(results)
+              resolve({"code":200, "msg":`${results.deletedCount} data deleted`})
             }
             else{
               reject(err)
