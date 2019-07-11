@@ -34,51 +34,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+// Initialize mongo db
 var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
-exports.assert = assert;
-// config dotenv environment
-// switch(process.env.NODE_ENV) {
-//   case "development":
-//     console.log("Environment is 'development'")
-//     configDotenv({
-//       path: path.resolve(__dirname, "../.env.development")
-//     })
-//     break
-//   case "production":
-//     configDotenv({
-//       path: path.resolve(__dirname, "../.env")
-//     })
-//     break
-//   default:
-//     throw new Error(`'NODE_ENV' ${process.env.NODE_ENV} is not handled!`)
-// }
+var assert_1 = __importDefault(require("assert"));
+exports.assert = assert_1.default;
+// Init dotenv file in TypeScript
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var url = process.env.COSMOS_URL;
-console.log("cosmo url = " + url);
+console.log('url: ' + url);
 var db = null;
 exports.db = db;
-function initDB() {
+MongoClient.connect(url, {
+    useNewUrlParser: true,
+    connectWithNoPrimary: true
+}, function (err, client) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
-                return __awaiter(this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0: return [4 /*yield*/, assert.equal(null, err)];
-                            case 1:
-                                _a.sent();
-                                return [4 /*yield*/, client.db('familiesdb')];
-                            case 2:
-                                exports.db = db = _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            });
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    assert_1.default.equal(null, err);
+                    return [4 /*yield*/, client.db('familiesdb')];
+                case 1:
+                    exports.db = db = _a.sent();
+                    return [2 /*return*/];
+            }
         });
     });
-}
-initDB();
+});
 //# sourceMappingURL=mongodb.js.map
